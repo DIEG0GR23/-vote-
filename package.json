@@ -1,0 +1,14 @@
+{
+  "name": "vote-twitch",
+  "version": "0.1.0",
+  "description": "VOTE! — votación de clips de Twitch para streamers",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "UNLICENSED",
+  "private": true
+}

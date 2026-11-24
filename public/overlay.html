@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VOTE! · Overlay</title><link rel="stylesheet" href="/styles.css">
+<style>
+html,body{background:transparent}
+.ov{display:grid;grid-template-columns:220px minmax(0,1fr);gap:20px;align-items:center;background:rgba(0,0,0,.82);border-radius:20px;padding:20px;margin:16px;max-width:720px}
+.ov .pie{max-width:220px}
+.t{font-size:44px;font-weight:900;font-variant-numeric:tabular-nums}
+</style></head>
+<body>
+<div id="app"></div>
+<script src="/common.js"></script>
+<script>{
+  // Úsalo en OBS como "Fuente de navegador" (ancho 760, alto 320). Fondo transparente.
+  const login = location.pathname.split('/')[2];
+  let D = null, offset = 0;
+  async function load() {
+    try { D = await api('/api/v/' + login + '/overlay'); offset = D.voting.now - Date.now(); render(); } catch { /* reintenta */ }
+  }
+  function render() {
+    const r = D.results, v = D.voting;
+    if (!r || v.status === 'idle') { $('#app').innerHTML = ''; return; }
+    const items = r.items.map(c => ({ label: c.title, value: c.votes }));
+    $('#app').innerHTML = `<div class="ov">${pieSvg(items)}<div>
+      <div class="row">${LOGO}${v.status === 'live' ? '<span class="badge-live">LIVE</span>' : '<span class="pill-red" style="font-size:11px;padding:3px 10px">Cerrada</span>'}</div>
+      <h3 style="margin:8px 0">${esc(r.name)}</h3>${legendHtml(items)}
+      <div class="t" id="t"></div></div></div>`;
+    tick();
+  }
+  function tick() { const t = $('#t'); if (t && D) t.textContent = D.voting.status === 'live' ? fmtTime(D.voting.endsAt - (Date.now() + offset)) : ''; }
+  setInterval(tick, 250);
+  setInterval(load, 1500);
+  load();
+}</script>
+</body></html>

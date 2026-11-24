@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VOTE! · Modo demo</title><link rel="stylesheet" href="/styles.css"></head>
+<body>
+<main class="splash"><form class="box card" id="f" style="padding:28px;width:min(440px,100%)">
+  <span class="logo" style="font-size:34px">VOTE<b>!</b></span>
+  <h3>Modo demo</h3>
+  <p class="small mute" style="margin:0">Todavía no hay credenciales de Twitch en el archivo <b>.env</b>, así que el login es simulado. Escribe cualquier nombre de usuario de Twitch para entrar.</p>
+  <input id="n" placeholder="Tu usuario de Twitch" autocomplete="off" required minlength="3" maxlength="25">
+  <button class="btn purple pill" style="width:100%">Entrar</button>
+</form></main>
+<script src="/common.js"></script>
+<script>{
+  const next = new URLSearchParams(location.search).get('next') || '/streamer';
+  $('#n').focus();
+  $('#f').addEventListener('submit', async e => {
+    e.preventDefault();
+    try { await api('/auth/demo', { method: 'POST', body: { name: $('#n').value } }); location.href = /^\/[A-Za-z0-9_\/-]*$/.test(next) ? next : '/streamer'; }
+    catch (err) { toast(err.message, true); }
+  });
+}</script>
+</body></html>

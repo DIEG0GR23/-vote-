@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>VOTE! · Dashboard</title><link rel="stylesheet" href="/styles.css">
+<style>
+.top{display:flex;align-items:center;gap:14px;padding:14px max(3vw,16px);border-bottom:1px solid var(--line);position:sticky;top:0;background:#000;z-index:10}
+.top .t{font-weight:900;font-size:18px;text-transform:uppercase}
+.user{margin-left:auto;display:flex;align-items:center;gap:8px;font-weight:900;color:var(--red)}
+.user img,.av{width:28px;height:28px;border-radius:50%;background:var(--panel2);object-fit:cover}
+.shell{display:grid;grid-template-columns:200px minmax(0,1fr);min-height:calc(100vh - 62px)}
+nav.side{border-right:1px solid var(--line);padding:18px 10px;display:flex;flex-direction:column;gap:2px}
+nav.side a{display:block;padding:11px 12px;border-radius:10px;font-weight:900;font-size:13px;text-transform:uppercase;text-decoration:none;color:#ccc}
+nav.side a:hover{background:var(--panel)}nav.side a.on{background:var(--panel2);color:#fff}
+nav.side .sep{flex:1}
+main#main{padding:24px max(3vw,16px) 60px;max-width:1240px;width:100%}
+.head{display:flex;align-items:end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.tiles{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.tile{background:var(--panel);border-radius:16px;min-height:120px;display:grid;place-items:center;text-align:center;padding:14px;font-weight:900;text-transform:uppercase;font-size:13px;text-decoration:none;border:1px solid transparent}
+.tile:hover{border-color:var(--purple)}
+.tile small{display:block;color:var(--mute);font-weight:700;text-transform:none;margin-top:6px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:18px 0}
+.stat{background:var(--panel);border-radius:14px;padding:14px}.stat b{display:block;font-size:28px;font-weight:900}
+.stat span{font-size:12px;color:var(--mute);font-weight:800;text-transform:uppercase}
+.activebar{background:var(--panel);border-radius:14px;padding:14px 18px;font-weight:900;text-transform:uppercase;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.share{display:grid;gap:10px;margin-top:14px}
+.share .row input{flex:1;font-size:14px}
+.catrow{background:var(--panel);border-radius:12px;margin-bottom:10px}
+.catrow .h{display:flex;align-items:center;gap:10px;padding:12px 14px;flex-wrap:wrap}
+.catrow .name{font-weight:900;text-transform:uppercase;font-size:17px;flex:1;cursor:pointer;background:none;border:0;text-align:left;padding:4px 0}
+.catrow .body{padding:4px 14px 16px;border-top:1px solid var(--line)}
+.nominees{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px;margin:12px 0}
+.nom{background:var(--panel2);border-radius:12px;overflow:hidden;display:flex;flex-direction:column}
+.thumb{aspect-ratio:16/9;background:#111 center/cover;display:grid;place-items:center;color:#555;font-weight:900;font-size:12px;width:100%;object-fit:cover}
+.nom .in{padding:10px;display:grid;gap:6px;flex:1}
+.nom .ti{font-weight:900;font-size:13px;text-transform:uppercase}
+.split{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:18px;align-items:start}
+.form{display:grid;gap:12px}
+.pv{display:grid;grid-template-columns:140px minmax(0,1fr);gap:12px}
+.pvbox{background:var(--panel2);border-radius:12px;display:grid;place-items:center;font-weight:900;text-transform:uppercase;font-size:13px;text-align:center;min-height:120px;overflow:hidden}
+.lib{display:grid;gap:8px}
+.libitem{display:grid;grid-template-columns:96px minmax(0,1fr) auto;gap:12px;align-items:center;background:var(--panel);border-radius:12px;padding:8px}
+.libitem .thumb{border-radius:8px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}.chip{background:#2b2b2b;border-radius:999px;font-size:11px;font-weight:800;padding:3px 9px;text-transform:uppercase}
+.live{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:18px}
+.chart{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr);gap:20px;align-items:center}
+.timer{font-size:clamp(34px,5vw,52px);font-weight:900;background:var(--panel2);border-radius:14px;padding:6px 18px;display:inline-block;font-variant-numeric:tabular-nums}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.ctrl .btn.ic{background:var(--panel2);min-width:52px}
+.log{display:grid;gap:8px;font-size:12px;font-weight:700;max-height:420px;overflow:auto}
+.log div{border-bottom:1px solid var(--line);padding-bottom:6px}
+.log .block{color:#ff8a8a}.log .warn{color:var(--yellow)}
+.rank{display:grid;gap:12px}
+.rank .r{display:grid;grid-template-columns:28px 64px minmax(0,1fr) auto;gap:12px;align-items:center}
+.rank .r .thumb{border-radius:6px}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:14px}
+.tabs .btn{flex:none}.tabs .btn.on{background:#fff;color:#000}
+.winner{background:linear-gradient(90deg,rgba(145,71,255,.35),transparent);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-weight:900;text-transform:uppercase}
+.selects{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.go{width:84px;height:84px;border-radius:50%;background:var(--green);color:#063;font-weight:900;border:0;cursor:pointer;display:block;margin:18px auto 0;box-shadow:0 0 30px rgba(63,209,74,.5);font-size:14px}
+.presets{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+@media (max-width:900px){.live,.split{grid-template-columns:1fr}.chart{grid-template-columns:1fr;justify-items:center}}
+@media (max-width:700px){
+  .shell{grid-template-columns:1fr}
+  nav.side{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line);padding:8px}
+  nav.side a{flex:none}nav.side .sep{display:none}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .top .t{display:none}.pv{grid-template-columns:1fr}
+}
+</style></head>
+<body>
+<div id="app"><div class="splash"><span class="logo big">VOTE<b>!</b></span></div></div>
+<script src="/common.js"></script>
+<script src="/streamer.js"></script>
+</body></html>
